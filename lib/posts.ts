@@ -3,6 +3,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
+import {s} from "hastscript";
 
 const postsDirectory = path.join(process.cwd(), 'posts');
 
@@ -23,7 +24,7 @@ export const getSortedPostsData = () => {
         // Combine the data with the id
         return {
             id,
-            ...matterResult.data,
+            ...(matterResult.data as { date: string, title: string }),
         };
     });
     // Sort posts by date
@@ -73,6 +74,6 @@ export const getPostData = async (id) => {
     return {
         id,
         contentHtml,
-        ...matterResult.data,
+        ...(matterResult.data as { date: string; title: string })
     };
 }

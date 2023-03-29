@@ -3,21 +3,30 @@ import Link from 'next/link';
 import Date from '../components/date';
 import Layout, { siteTitle } from '../components/layout';
 import utilStyles from '../styles/utils.module.css';
-import { getSortedPostsData } from '../lib/posts';
+import { getPosts } from '../lib/posts';
+// import { getSortedPostsData } from '../lib/posts';
 import { GetStaticProps } from 'next'
-import {s} from "hastscript";
 
-export const getStaticProps: GetStaticProps = async () => {
-    const allPostsData = getSortedPostsData();
+export const getStaticProps = async () => {
+    const { posts } = await getPosts();
 
     return {
-        props: {
-            allPostsData,
-        },
+        props: { allPostsData: posts },
     };
 }
 
-const Home = ({ allPostsData }: { allPostsData: { id: string, date: string, title: string }[]}) => {
+
+// export const getStaticProps: GetStaticProps = async () => {
+//     const allPostsData = getSortedPostsData();
+//
+//     return {
+//         props: {
+//             allPostsData,
+//         },
+//     };
+// }
+
+const Home = ({ allPostsData }: { allPostsData: { _id: string, date: string, title: string, text: string }[]}) => {
   return (
       <Layout home>
         <Head>
@@ -29,9 +38,9 @@ const Home = ({ allPostsData }: { allPostsData: { id: string, date: string, titl
         <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
             <h2 className={utilStyles.headingLg}>Blog</h2>
             <ul className={utilStyles.list}>
-                {allPostsData.map(({ id, date, title }) => (
-                    <li className={utilStyles.listItem} key={id}>
-                        <Link href={`/posts/${id}`}>{title}</Link>
+                {allPostsData.map(({ _id, date, title }) => (
+                    <li className={utilStyles.listItem} key={_id}>
+                        <Link href={`/posts/${_id}`}>{title}</Link>
                         <br />
                         <small className={utilStyles.lightText}>
                             <Date dateString={date} />

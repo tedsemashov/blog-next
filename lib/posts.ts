@@ -1,7 +1,4 @@
-import path from 'path';
 import clientPromise from './mongodb';
-
-const postsDirectory = path.join(process.cwd(), 'posts');
 
 let client;
 let db;

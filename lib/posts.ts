@@ -19,8 +19,6 @@ const init = async () => {
     }
 }
 
-(async () => { await init()})();
-
 export const getPosts = async () => {
     try {
         if(!posts) await init();
@@ -68,7 +66,8 @@ export const getPostData = async (id) => {
         if(!posts) await init();
 
         const result = await posts.find({}).toArray();
-        const { date, title, text }: { date: string, title: string, text: string } = result.find(({ url }) => url === id);
+        const { date, title, text }: { date: string, title: string, text: string }
+            = result.find(({ url }) => url === id);
 
         return { id, date, title, text };
     } catch (error) {

@@ -8,23 +8,16 @@ import { GetStaticProps, GetStaticPaths } from 'next'
 export const getStaticProps: GetStaticProps = async ({ params }) => {
     const postData = await getPostData(params?.id as string);
 
-    return {
-        props: {
-            postData,
-        },
-    };
+    return { props: { postData } };
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
     const paths = await getAllPostIds();
 
-    return {
-        paths,
-        fallback: false,
-    };
+    return { paths, fallback: false };
 }
 
-const Post = ({ postData }: {
+const Post = ({ postData: { title, date, text} }: {
     postData: {
         title: string
         date: string
@@ -34,14 +27,14 @@ const Post = ({ postData }: {
     return (
         <Layout>
             <Head>
-                <title>{postData.title}</title>
+                <title>{title}</title>
             </Head>
             <article>
-                <h1 className={utilStyles.headingXl}>{postData.title}</h1>
+                <h1 className={utilStyles.headingXl}>{title}</h1>
                 <div className={utilStyles.lightText}>
-                    <Date dateString={postData.date} />
+                    <Date dateString={date} />
                 </div>
-                <div>{postData.text}</div>
+                <div>{text}</div>
             </article>
         </Layout>
     );

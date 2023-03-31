@@ -14,7 +14,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 export const getStaticPaths: GetStaticPaths = async () => {
     const paths = await getAllPostIds();
 
-    return { paths, fallback: false };
+    return { paths, fallback: 'blocking' };
 }
 
 const Post = ({ postData: { title, date, text} }: {

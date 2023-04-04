@@ -1,15 +1,15 @@
 import Head from 'next/head';
-import Image from 'next/image';
-import styles from './layout.module.css';
-import utilStyles from '../styles/utils.module.css';
-import Link from 'next/link';
+// import styles from './layout.module.css';
+// import utilStyles from '../styles/utils.module.css';
+import { Flex, Heading } from '@chakra-ui/react';
+import { Image, Link } from '@chakra-ui/next-js';
 
 const name = 'Ted Semashov';
 export const siteTitle = 'Next.js Sample Website';
 
-const Layout = ({ children, home }: {children: React.ReactNode, home?: boolean }) => {
+const Layout = ({ children, home }: { children: React.ReactNode, home?: boolean }) => {
     return (
-        <div className={styles.container}>
+        <Flex height="100vh" direction="column" alignItems="center">
             <Head>
                 <link rel="icon" href="/favicon.ico" />
                 <meta
@@ -25,18 +25,18 @@ const Layout = ({ children, home }: {children: React.ReactNode, home?: boolean }
                 <meta name="og:title" content={siteTitle} />
                 <meta name="twitter:card" content="summary_large_image" />
             </Head>
-            <header className={styles.header}>
+            <Flex direction="column" alignItems="center" m={10}>
                 {home ? (
                     <>
                         <Image
                             priority
                             src="/images/profile.jpg"
-                            className={utilStyles.borderCircle}
+                            borderRadius='full'
                             height={144}
                             width={144}
-                            alt=""
+                            alt="Ted Semashov"
                         />
-                        <h1 className={utilStyles.heading2Xl}>{name}</h1>
+                        <Heading as='h2' size='xl' mt={5} p={3} rounded="full" bg="teal.200">{name}</Heading>
                     </>
                 ) : (
                     <>
@@ -44,27 +44,21 @@ const Layout = ({ children, home }: {children: React.ReactNode, home?: boolean }
                             <Image
                                 priority
                                 src="/images/profile.jpg"
-                                className={utilStyles.borderCircle}
+                                borderRadius='full'
                                 height={108}
                                 width={108}
-                                alt=""
+                                alt="Ted Semashov"
                             />
                         </Link>
-                        <h2 className={utilStyles.headingLg}>
-                            <Link href="/" className={utilStyles.colorInherit}>
-                                {name}
-                            </Link>
-                        </h2>
+                        <Heading as='h3' size='lg'>{name}</Heading>
                     </>
                 )}
-            </header>
-            <main>{children}</main>
+            </Flex>
+            <Flex direction="column" alignItems="center">{children}</Flex>
             {!home && (
-                <div className={styles.backToHome}>
-                    <Link href="/">← Back to home</Link>
-                </div>
+                <Link href="/">← Back to home</Link>
             )}
-        </div>
+        </Flex>
     );
 }
 

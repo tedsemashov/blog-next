@@ -5,7 +5,7 @@ const Date = ({ dateString }: { dateString: string }) => {
     const date = parseISO(dateString);
 
     return (
-        <Text as='b' ml={3} px={2} rounded="full" bg="teal.50">
+        <Text as='b' ml={3} px={2} rounded="full" bg="teal.50" color='black'>
             {format(date, 'LLLL d, yyyy')}
         </Text>
     );

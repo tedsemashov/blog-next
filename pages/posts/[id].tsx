@@ -23,22 +23,20 @@ interface PostData {
     text: string
 }
 
-const Post = ({ postData: { title, date, text} }: { postData: PostData }) => {
-    return (
-        <Layout>
-            <Head>
-                <title>{title}</title>
-            </Head>
+const Post = ({ postData: { title, date, text} }: { postData: PostData }) => (
+    <Layout>
+        <Head>
+            <title>{title}</title>
+        </Head>
 
-            <Heading as='h2' size='md' textAlign='center'>
-                {title}
-            </Heading>
-            <Container maxW='2xl'>
-                <Text m={4} fontSize='lg'>{text}</Text>
-                <Date dateString={date} />
-            </Container>
-        </Layout>
-    );
-}
+        <Heading as='h2' size='md' textAlign='center'>
+            {title}
+        </Heading>
+        <Container maxW='2xl'>
+            <Text m={4} fontSize='lg'>{text}</Text>
+            <Date dateString={date} />
+        </Container>
+    </Layout>
+)
 
 export default Post;

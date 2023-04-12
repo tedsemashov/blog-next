@@ -1,8 +1,7 @@
 import Head from 'next/head';
-// import styles from './layout.module.css';
-// import utilStyles from '../styles/utils.module.css';
-import { Flex, Heading } from '@chakra-ui/react';
-import { Image, Link } from '@chakra-ui/next-js';
+import { Flex, Heading, Avatar, AvatarBadge, Button } from '@chakra-ui/react';
+import { Link } from '@chakra-ui/next-js';
+import { ArrowBackIcon } from '@chakra-ui/icons'
 
 const name = 'Ted Semashov';
 export const siteTitle = 'Next.js Sample Website';
@@ -28,35 +27,29 @@ const Layout = ({ children, home }: { children: React.ReactNode, home?: boolean 
             <Flex direction="column" alignItems="center" m={10}>
                 {home ? (
                     <>
-                        <Image
-                            priority
-                            src="/images/profile.jpg"
-                            borderRadius='full'
-                            height={144}
-                            width={144}
-                            alt="Ted Semashov"
-                        />
+                        <Avatar name='Ted Semashov' src='/images/profile.jpg' size='2xl'>
+                            <AvatarBadge boxSize='0.8em' bg='green.500' />
+                        </Avatar>
                         <Heading as='h2' size='xl' mt={5} p={3} rounded="full" bg="teal.200">{name}</Heading>
                     </>
                 ) : (
                     <>
                         <Link href="/">
-                            <Image
-                                priority
-                                src="/images/profile.jpg"
-                                borderRadius='full'
-                                height={108}
-                                width={108}
-                                alt="Ted Semashov"
-                            />
+                            <Avatar name='Ted Semashov' src='/images/profile.jpg' size='xl'>
+                                <AvatarBadge boxSize='0.8em' bg='green.500' />
+                            </Avatar>
                         </Link>
-                        <Heading as='h3' size='lg'>{name}</Heading>
+                        <Heading as='h3' size='md' mt={5} p={3} rounded="full" bg="teal.200">{name}</Heading>
                     </>
                 )}
             </Flex>
             <Flex direction="column" alignItems="center">{children}</Flex>
             {!home && (
-                <Link href="/">← Back to home</Link>
+                <Link href="/" style={{ textDecoration: 'none' }}>
+                    <Button size='sm' mt={4} leftIcon={<ArrowBackIcon />} colorScheme='teal' variant='outline'>
+                        Back to home
+                    </Button>
+                </Link>
             )}
         </Flex>
     );

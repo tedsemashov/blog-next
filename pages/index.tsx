@@ -27,7 +27,7 @@ interface PostData {
 }
 
 const Home = ({ allPostsData }: { allPostsData: PostData[]}) => {
-    const { toggleColorMode } = useColorMode();
+    const { colorMode, toggleColorMode } = useColorMode();
 
     return (
         <Layout home>
@@ -52,7 +52,7 @@ const Home = ({ allPostsData }: { allPostsData: PostData[]}) => {
 
             <Stack align='center' direction='row'>
                 <Text as='b'>Dark mode</Text>
-                <Switch colorScheme='teal' size='lg' onChange={toggleColorMode}/>
+                <Switch colorScheme='teal' size='lg' onChange={toggleColorMode} isChecked={colorMode !== 'light'}/>
             </Stack>
         </Layout>
     )

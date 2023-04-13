@@ -1,79 +1,73 @@
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
-import { remark } from 'remark';
-import html from 'remark-html';
-import {s} from "hastscript";
+import clientPromise from './mongodb';
 
-const postsDirectory = path.join(process.cwd(), 'posts');
+let client;
+let db;
+let posts;
 
-export const getSortedPostsData = () => {
-    // Get file names under /posts
-    const fileNames = fs.readdirSync(postsDirectory);
-    const allPostsData = fileNames.map((fileName) => {
-        // Remove ".md" from file name to get id
-        const id = fileName.replace(/\.md$/, '');
+const init = async () => {
+    if(db) return;
 
-        // Read markdown file as string
-        const fullPath = path.join(postsDirectory, fileName);
-        const fileContents = fs.readFileSync(fullPath, 'utf8');
-
-        // Use gray-matter to parse the post metadata section
-        const matterResult = matter(fileContents);
-
-        // Combine the data with the id
-        return {
-            id,
-            ...(matterResult.data as { date: string, title: string }),
-        };
-    });
-    // Sort posts by date
-    return allPostsData.sort((a, b) => a.date < b.date ? 1 : -1);
+    try {
+        client = await clientPromise;
+        db = await client.db('blog-posts');
+        posts = await db.collection('posts')
+    } catch (error) {
+        throw new Error('Failed to establish connection to database');
+    }
 }
 
-export const getAllPostIds = () => {
-    const fileNames = fs.readdirSync(postsDirectory);
+export const getPosts = async () => {
+    try {
+        if(!posts) await init();
 
-    // IMPORTANT FORMAT
-    // Returns an array that looks like this:
-    // [
-    //   {
-    //     params: {
-    //       id: 'ssg-ssr'
-    //     }
-    //   },
-    //   {
-    //     params: {
-    //       id: 'pre-rendering'
-    //     }
-    //   }
-    // ]
-    return fileNames.map((fileName) => {
-        return {
-            params: {
-                id: fileName.replace(/\.md$/, ''),
-            },
-        };
-    });
+        const result = await posts.find({}).map(user => ({...user, _id: user._id.toString() })).toArray();
+        return { posts: result }
+    } catch (error) {
+        return { error: 'Failed to fetch posts!'}
+    }
+}
+
+export const getAllPostIds = async () => {
+    try {
+        if(!posts) await init();
+
+        const result = await posts.find({}).toArray();
+        // IMPORTANT FORMAT
+        // Returns an array that looks like this:
+        // [
+        //   {
+        //     params: {
+        //       id: 'ssg-ssr'
+        //     }
+        //   },
+        //   {
+        //     params: {
+        //       id: 'pre-rendering'
+        //     }
+        //   }
+        // ]
+        return result.map(({ url }) => {
+            return {
+                params: {
+                    id: url,
+                },
+            };
+        });
+    } catch (error) {
+        return { error: 'Failed to fetch posts!'}
+    }
 }
 
 export const getPostData = async (id) => {
-    const fullPath = path.join(postsDirectory, `${id}.md`);
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
+    try {
+        if(!posts) await init();
 
-    // Use gray-matter to parse the post metadata section
-    const matterResult = matter(fileContents);
+        const result = await posts.find({}).toArray();
+        const { date, title, text }: { date: string, title: string, text: string }
+            = result.find(({ url }) => url === id);
 
-    // Use remark to convert markdown into HTML string
-    const processedContent = await remark()
-        .use(html)
-        .process(matterResult.content);
-    const contentHtml = processedContent.toString();
-
-    // Combine the data with the id and contentHtml
-    return {
-        id,
-        contentHtml,
-        ...(matterResult.data as { date: string; title: string })
-    };
+        return { id, date, title, text };
+    } catch (error) {
+        return { error: 'Failed to fetch posts!'}
+    }
 }

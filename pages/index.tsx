@@ -3,35 +3,33 @@ import Link from 'next/link';
 import Date from '../components/date';
 import Layout, { siteTitle } from '../components/layout';
 import utilStyles from '../styles/utils.module.css';
-import { getSortedPostsData } from '../lib/posts';
+import { getPosts } from '../lib/posts';
 import { GetStaticProps } from 'next'
-import {s} from "hastscript";
 
 export const getStaticProps: GetStaticProps = async () => {
-    const allPostsData = getSortedPostsData();
+    const { posts } = await getPosts();
 
     return {
-        props: {
-            allPostsData,
-        },
+        props: { allPostsData: posts },
+        revalidate: 30
     };
 }
 
-const Home = ({ allPostsData }: { allPostsData: { id: string, date: string, title: string }[]}) => {
+const Home = ({ allPostsData }: { allPostsData: { _id: string, date: string, title: string, text: string, url: string }[]}) => {
   return (
       <Layout home>
         <Head>
             <title>{siteTitle}</title>
         </Head>
         <section className={utilStyles.headingMd}>
-            <p>Ted Semashov</p>
+            <p>Blog app for studying Next.js + MongoDB</p>
         </section>
         <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
             <h2 className={utilStyles.headingLg}>Blog</h2>
             <ul className={utilStyles.list}>
-                {allPostsData.map(({ id, date, title }) => (
-                    <li className={utilStyles.listItem} key={id}>
-                        <Link href={`/posts/${id}`}>{title}</Link>
+                {allPostsData.map(({ _id, url, date, title }) => (
+                    <li className={utilStyles.listItem} key={_id}>
+                        <Link href={`/posts/${url}`}>{title}</Link>
                         <br />
                         <small className={utilStyles.lightText}>
                             <Date dateString={date} />
